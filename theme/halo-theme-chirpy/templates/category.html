@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html
+  th:replace="~{modules/layout :: html (title = #{breadcrumb.categories} +': '+ ${category.spec.displayName},
+  content = ~{::content}, layout = 'category' ,breadcrumb = ~{::breadcrumb})}"
+  xmlns:th="https://www.thymeleaf.org"
+>
+  <th:block th:fragment="breadcrumb">
+    <span>
+      <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>
+      <a href="/categories">[[#{breadcrumb.categories}]]</a>
+    </span>
+    <span>[[${category.spec.displayName}]]</span>
+  </th:block>
+
+  <div id="page-category" th:fragment="content">
+    <h1 class="ps-lg-2">
+      <i class="far fa-folder-open fa-fw text-muted"></i>
+      [[${category.spec.displayName}]]
+      <span class="lead text-muted ps-2">[[${category.status.postCount}]]</span>
+    </h1>
+
+    <ul
+      class="content ps-0"
+      th:with="posts = ${postFinder.listByCategory(1,0,category.metadata.name)}"
+    >
+      <li
+        class="d-flex justify-content-between px-md-3"
+        th:each="post : ${posts.items}"
+      >
+        <a th:href="${post.status.permalink}">[[${post.spec.title}]]</a>
+        <span class="dash flex-grow-1"></span>
+        <span class="text-muted small"
+          >[[${#dates.format(post.spec.publishTime,'yyyy年MM月d日')}]]</span
+        >
+      </li>
+    </ul>
+  </div>
+</html>

@@ -1,0 +1,48 @@
+# nonk8s
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  name: halo-theme-chirpy
+  annotations:
+    # Add supports for Halo App Store
+    # https://halo.run/store/apps/app-vGuQB
+    "store.halo.run/app-id": "app-vGuQB"
+spec:
+  displayName: Chirpy
+  author:
+    name: AirboZH
+    website: https://airbozh.cn
+  description: A minimal, responsive and feature-rich Halo theme for technical writing.
+  logo: https://chirpy-img.netlify.app/commons/avatar.jpg
+  website: https://github.com/AirboZH/halo-theme-chirpy
+  repo: https://github.com/AirboZH/halo-theme-chirpy.git
+  settingName: "halo-theme-chirpy-setting"
+  configMapName: "halo-theme-chirpy-configMap"
+  version: 1.4.28
+  require: ">=2.0.0"
+  customTemplates:
+    page:
+      - name: 归档
+        file: archives.html
+        description: 归档页面
+      - name: 友链
+        file: links.html
+        description: 友链页面
+      - name: 标签分类
+        file: tags.html
+        description: 标签和分类展示页面
+      - name: 分类展示
+        file: categories.html
+        description: 分类展示页面
+      - name: 瞬间
+        file: moments.html
+        description: 类似朋友圈的短动态展示页面
+      - name: 图库
+        file: photos.html
+        description: 展示图库照片的瀑布流页面
+      - name: 全球足迹
+        file: footprints.html
+        description: 展示你的全球足迹和地图标点
+      - name: 编辑足迹
+        file: footprint-edit.html
+        description: 用于在地图上打点并关联文章的后台页面

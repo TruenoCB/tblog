@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+  <!-- The Side Bar -->
+
+  <aside
+    th:fragment="sidebar()"
+    aria-label="Sidebar"
+    id="sidebar"
+    class="d-flex flex-column align-items-end"
+  >
+    <header class="profile-wrapper">
+      <a class="rounded-circle" href="/" id="avatar">
+        <th:block th:if="${not #strings.isEmpty(site.logo)}">
+          <img th:src="${site.logo}" width="112" height="112" alt="avatar" />
+        </th:block>
+        <th:block th:if="${#strings.isEmpty(site.logo)}">
+          <p th:text="${#strings.substring(site.title,0,1)}" />
+        </th:block>
+      </a>
+
+      <h1 class="site-title">
+        <a href="/">[[${site.title}]]</a>
+      </h1>
+      <p class="site-subtitle fst-italic">
+        [[${#strings.isEmpty(site.subtitle)} ? 'A text-focused Halo theme' :
+        ${site.subtitle}]]
+      </p>
+    </header>
+    <!-- .profile-wrapper -->
+
+    <nav
+      class="nav flex-column flex-grow-1 w-100 ps-0"
+      th:with="menuItems = ${menuFinder.getPrimary().menuItems}"
+    >
+      <ul class="nav">
+        <li th:class="nav-item" th:each="menuItem : ${menuItems}">
+          <a
+            class="nav-link"
+            th:href="@{${menuItem.status.href}}"
+            th:target="${menuItem.spec.target?.value}"
+            th:with="icon = ${#annotations.get(menuItem, 'icon')}"
+          >
+            <i
+              class="fa-fw fas fa-bars-staggered"
+              th:if="${#strings.isEmpty(icon)}"
+            ></i>
+            <i
+              th:class="${'fa-fw ' + icon}"
+              th:if="${not #strings.isEmpty(icon)}"
+            ></i>
+            <span>[[${menuItem.status.displayName}]]</span>
+          </a>
+        </li>
+
+        <!-- .nav-item -->
+      </ul>
+    </nav>
+    <!-- ul.nav.flex-column -->
+
+    <div class="sidebar-bottom d-flex flex-wrap align-items-center w-100">
+      <!--    {% unless site.theme_mode %}-->
+      <button class="mode-toggle btn" aria-label="Switch Mode">
+        <i class="fas fa-adjust"></i>
+      </button>
+
+      <th:block th:if="${not #arrays.isEmpty(theme.config.sidebar.socials)}">
+        <span class="icon-border"></span>
+        <th:block th:each="entry : ${theme.config.sidebar.socials}">
+          <a th:href="${entry.url}">
+            <i th:class="${entry.icon}"></i>
+          </a>
+        </th:block>
+      </th:block>
+    </div>
+    <!-- .sidebar-bottom -->
+  </aside>
+  <!-- #sidebar -->
+</html>

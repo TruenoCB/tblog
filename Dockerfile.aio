@@ -1,0 +1,39 @@
+# 使用包含 Java 21 开发环境和 Ubuntu 基础系统的官方镜像
+FROM eclipse-temurin:21-jdk-jammy
+
+# 1. 设置时区为上海
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# 2. 安装 MySQL 8 和 wget 工具
+# 替换为清华大学镜像源并允许不安全的源以应对 GPG 过期问题
+RUN sed -i 's/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
+    sed -i 's/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
+    apt-get update --allow-insecure-repositories || true && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mysql-server wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# 配置 MySQL 的运行目录权限
+RUN usermod -d /var/lib/mysql/ mysql && \
+    mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+
+# 3. 安装 MinIO (AMD64 架构)
+RUN wget https://dl.min.io/server/minio/release/linux-amd64/minio -O /usr/local/bin/minio && \
+    chmod +x /usr/local/bin/minio
+
+# 4. 将你的所有项目代码、主题、插件拷贝到容器内的 /workspace 目录
+WORKDIR /workspace
+COPY . /workspace/
+
+# 5. 拷贝启动脚本和编译脚本，并赋予可执行权限
+COPY aio-entrypoint.sh /usr/local/bin/
+COPY build-and-run.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/aio-entrypoint.sh /usr/local/bin/build-and-run.sh
+
+# 6. 暴露所需端口
+# 8090 (Halo Web), 3306 (MySQL), 9000 (MinIO API), 9001 (MinIO Console)
+EXPOSE 8090 3306 9000 9001
+
+# 7. 设置容器启动时执行的入口脚本
+ENTRYPOINT ["aio-entrypoint.sh"]

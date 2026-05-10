@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  halo-dev:
+    image: eclipse-temurin:21-jdk
+    container_name: halo-dev
+    restart: "no"
+    volumes:
+      - ../backend:/app
+      - ../config:/config
+      - ~/.gradle:/root/.gradle
+      - ../theme/halo-theme-chirpy:/root/.halo2-dev/themes/halo-theme-chirpy
+      - ../plugins:/root/.halo2-dev/plugins
+    working_dir: /app
+    ports:
+      - "8090:8090"
+    command: ./gradlew bootRun --args="--spring.config.additional-location=/config/application-dev.yaml"

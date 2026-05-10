@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  halo-aio:
+    image: halo-aio-image:v15
+    container_name: my-halo-aio
+    restart: unless-stopped
+    ports:
+      - "8090:8090" # Halo Web 端口
+      - "9000:9000" # MinIO API 端口
+      - "9001:9001" # MinIO 控制台端口
+    volumes:
+      # 将 MySQL 数据库的数据挂载到宿主机
+      - /volume2/dockerVolume/tblog/mysql:/var/lib/mysql
+      # 将 Halo 博客的数据（附件、配置、日志等）挂载到宿主机
+      - /volume2/dockerVolume/tblog/halo:/root/.halo2
+      # 将 MinIO 对象存储的数据挂载到宿主机
+      - /volume2/dockerVolume/tblog/minio:/data
+    # 保持容器在前台运行，以便执行 aio-entrypoint.sh 里的逻辑
+    tty: true
+    stdin_open: true

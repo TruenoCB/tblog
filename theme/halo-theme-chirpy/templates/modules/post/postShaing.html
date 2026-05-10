@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <th:block
+    th:fragment="postShaing"
+    class="share-wrapper"
+    th:with="siteUrl = ${#strings.substring(site.url, #strings.length(site.url) - 1)== '/'}? ${#strings.substring(site.url,0,#strings.length(site.url) - 1)}:${site.url}"
+  >
+    <div
+      class="share-wrapper"
+      th:with="postUrl = ${siteUrl}+${post.status.permalink}"
+    >
+      <span class="share-label text-muted me-1">[[#{post_sharing.share}]]</span>
+      <span class="share-icons">
+        <span th:each="entry : ${theme.config.post.share}">
+          <a
+            th:href="${#strings.replace(entry.url, '@URL', postUrl)}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            th:title="${entry.name}"
+            target="_blank"
+            rel="noopener"
+          >
+            <i th:class="${entry.icon}"></i>
+          </a>
+        </span>
+
+        <a
+          href="javascript:void(0);"
+          onclick="navigator.clipboard.writeText(window.location.href);"
+        >
+          <i
+            id="copy-link"
+            class="fa-fw fas fa-link small"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            th:data-title-succeed="#{post.button.copy_link.succeeded}"
+            title="Copy"
+          >
+          </i>
+        </a>
+      </span>
+    </div>
+  </th:block>
+</html>

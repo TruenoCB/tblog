@@ -1,0 +1,47 @@
+#sidebar {
+  #avatar {
+    font-size: 50px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      margin: auto;
+    }
+  }
+}
+.access-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 4rem;
+}
+.access-links {
+  padding-left: 1rem;
+  border-left: 1px solid var(--main-border-color);
+
+  ul {
+    padding-left: 0;
+
+    li {
+      margin-bottom: 8px;
+      list-style: none;
+
+      a {
+        color: inherit;
+      }
+
+      a:hover {
+        @extend %link-hover;
+      }
+    }
+  }
+}
+
+#comment {
+  margin: 2rem 0;
+}
+
+.content p img {
+  @extend %rounded;
+}

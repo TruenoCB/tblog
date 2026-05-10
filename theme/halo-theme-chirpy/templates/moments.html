@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{modules/layout :: html(title = ${singlePage.spec.title}, content = ~{::content}, layout = 'page', breadcrumb = ~{::breadcrumb})}">
+<th:block th:fragment="breadcrumb">
+    <span>
+        <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>[[${singlePage.spec.title}]]</span>
+</th:block>
+
+<th:block th:fragment="content">
+    <h1 data-toc-skip th:text="${singlePage.spec.title}"></h1>
+    <div class="post-content">
+        <halo:moments>
+            <div th:if="${#lists.isEmpty(moments)}">
+                <p class="text-center text-muted mt-5">暂无瞬间内容</p>
+            </div>
+            <div class="moment-list" style="margin-top: 2rem;">
+                <div th:each="moment : ${moments}" class="moment-item" style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--main-border-color);">
+                    <div class="moment-header" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <img th:src="${moment.owner.avatar ?: '/assets/images/default-avatar.png'}" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 15px;">
+                        <div>
+                            <div th:text="${moment.owner.displayName}" style="font-weight: bold;"></div>
+                            <div th:text="${#dates.format(moment.spec.releaseTime, 'yyyy-MM-dd HH:mm')}" style="font-size: 0.85em; color: var(--text-muted-color);"></div>
+                        </div>
+                    </div>
+                    <div class="moment-content" th:utext="${moment.spec.content.html}" style="margin-bottom: 1rem; line-height: 1.6;"></div>
+                    
+                    <div class="moment-medium" th:if="${moment.spec.content.medium != null}" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;">
+                        <div th:each="media : ${moment.spec.content.medium}">
+                            <img th:if="${media.type.name() == 'PHOTO'}" th:src="${media.url}" style="max-width: 100%; max-height: 300px; border-radius: 8px; cursor: pointer;">
+                            <video th:if="${media.type.name() == 'VIDEO'}" th:src="${media.url}" controls style="max-width: 100%; max-height: 300px; border-radius: 8px;"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </halo:moments>
+    </div>
+</th:block>
+</html>

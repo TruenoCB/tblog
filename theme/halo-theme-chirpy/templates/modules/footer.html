@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+  <footer
+    th:fragment="footer()"
+    aria-label="Site Info"
+    class="d-flex flex-column justify-content-center text-muted flex-lg-row justify-content-lg-between align-items-lg-center pb-lg-3"
+  >
+    <p>
+      [['©' + ${#dates.format(new java.util.Date().getTime(), 'yyyy')}]]
+      <a th:href="${site.url}">[[${site.title}]]</a>.
+      <!-- copyright-->
+      <span
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        th:title="${theme.config.basics.footerCopyrightAgreement}"
+      >
+        [[#{footer.right}]]
+      </span>
+    </p>
+  </footer>
+</html>

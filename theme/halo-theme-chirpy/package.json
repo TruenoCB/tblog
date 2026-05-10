@@ -1,0 +1,57 @@
+{
+  "name": "halo-theme-chirpy",
+  "version": "1.4.9",
+  "description": "A minimal, responsive and feature-rich Halo theme for technical writing.",
+  "scripts": {
+    "build": "cross-env NODE_ENV=prod node mode.js && vite build",
+    "dev": "cross-env NODE_ENV=dev node mode.js && node export-zip.js && vite",
+    "lint": "eslint ./src --ext .js --ignore-path .gitignore",
+    "stylelint": "stylelint ./src/css/patch/**/*.scss",
+    "prettier": "prettier --write './src/css/patch/**/*.scss' './templates/**/*.html'",
+    "prettier-win": "prettier --write \"./src/css/patch/**/*.scss\" \"./templates/**/*.html\"",
+    "zip": "npm run build && cross-env NODE_ENV=prod  node export-zip.js"
+  },
+  "keywords": [
+    "halo",
+    "halo-theme"
+  ],
+  "author": {
+    "name": "AirboZH",
+    "url": "https://airbozh.cn",
+    "email": "i@airbozh.cn"
+  },
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AirboZH/halo-theme-chirpy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AirboZH/halo-theme-chirpy/issues"
+  },
+  "homepage": "https://github.com/AirboZH/halo-theme-chirpy",
+  "devDependencies": {
+    "@rollup/plugin-inject": "^5.0.3",
+    "archiver": "^6.0.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "sass": "^1.63.6",
+    "stylelint": "^15.3.0",
+    "stylelint-config-prettier-scss": "^1.0.0",
+    "stylelint-config-standard-scss": "^9.0.0",
+    "vite": "^5.1.1"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.2",
+    "clipboard": "^2.0.11",
+    "glob": "^10.3.3",
+    "highlight.js": "^11.9.0",
+    "jquery": "^3.7.1",
+    "magnific-popup": "^1.1.0",
+    "tocbot": "^4.21.2"
+  }
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html
+  th:replace="~{modules/layout :: html (title = '归档', content = ~{::content},
+   layout = 'archives', breadcrumb = ~{::breadcrumb})}"
+  xmlns:th="https://www.thymeleaf.org"
+>
+  <th:block th:fragment="breadcrumb">
+    <span>
+      <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>[[#{breadcrumb.archive}]]</span>
+  </th:block>
+  <div class="pl-xl-3" id="archives" th:fragment="content">
+    <th:block th:each="archive : ${postFinder.archives(1,0).items}">
+      <div class="year lead">[[${archive.year}]]</div>
+      <ul class="list-unstyled">
+        <th:block th:each="month : ${archive.months}">
+          <li th:each="post : ${month.posts}">
+            <span class="date day"
+              >[[${#dates.format(post.spec.publishTime,'dd')}]]</span
+            >
+            <span class="date month small text-muted ms-1"
+              >[[${#dates.format(post.spec.publishTime,'MM月')}]]</span
+            >
+            <a th:href="@{${post.status.permalink}}">[[${post.spec.title}]]</a>
+          </li>
+        </th:block>
+      </ul>
+    </th:block>
+  </div>
+</html>

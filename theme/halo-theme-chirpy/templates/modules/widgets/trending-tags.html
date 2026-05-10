@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+  <!--TODO {% if trending_tags.size > 0 %}-->
+  <section th:fragment="trendingTags()">
+    <h2 class="panel-heading">[[#{panel.trending_tags}]]</h2>
+    <div
+      th:with="tags = ${tagFinder.list(1,10)}"
+      class="d-flex flex-wrap mt-3 mb-1 me-3"
+    >
+      <th:block th:each="tag : ${tags.items}">
+        <a
+          class="post-tag btn btn-outline-primary"
+          th:href="@{'/tags/'+${tag.spec.slug}}"
+          >[[${tag.spec.displayName}]]</a
+        >
+      </th:block>
+    </div>
+  </section>
+</html>

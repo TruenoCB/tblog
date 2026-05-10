@@ -1,0 +1,20 @@
+server:
+  port: 8090
+
+halo:
+  work-dir: /root/.halo2-dev
+  external-url: http://localhost:8090
+  plugin:
+    runtime-mode: deployment
+    fixed-plugin-path:
+      - /root/.halo2-dev/plugins
+
+spring:
+  r2dbc:
+    url: r2dbc:h2:file:///${halo.work-dir}/db/halo-next?MODE=MySQL&DB_CLOSE_ON_EXIT=FALSE
+    username: admin
+    password: 123456
+  sql:
+    init:
+      mode: always
+      platform: h2

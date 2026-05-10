@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html
+  th:replace="~{modules/layout :: html (title = 'Edit Footprints', content = ~{::content},
+   layout = 'footprints', breadcrumb = ~{::breadcrumb})}"
+  xmlns:th="https://www.thymeleaf.org"
+>
+  <th:block th:fragment="breadcrumb">
+    <span>
+      <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>Edit Footprints</span>
+  </th:block>
+
+  <div class="pl-xl-3" id="footprints-edit-container" th:fragment="content">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h1 data-toc-skip>Edit Footprints</h1>
+        <p class="text-muted mb-0">Admin only page to manage footprints and associate posts.</p>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-header bg-white border-0 pt-4 pb-0">
+            <h5 class="mb-0"><i class="fas fa-map-marker-alt text-primary me-2"></i>Map Picker</h5>
+          </div>
+          <div class="card-body">
+            <div id="picker-map" style="height: 400px; width: 100%; border-radius: 8px; z-index: 1;"></div>
+            <div class="mt-3">
+              <label class="form-label fw-bold">Selected Coordinates</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="fas fa-crosshairs text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" id="selected-coords" placeholder="Click on map to select coordinates" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-header bg-white border-0 pt-4 pb-0">
+            <h5 class="mb-0"><i class="fas fa-edit text-primary me-2"></i>Footprint Details</h5>
+          </div>
+          <div class="card-body">
+            <form id="footprint-form">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Title (Location Name)</label>
+                <input type="text" class="form-control" id="fp-title" required placeholder="e.g. Beijing, China">
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">Associate Post</label>
+                <select class="form-select" id="fp-post" required>
+                  <option value="" disabled selected>Select a post...</option>
+                  <!-- Populate via JS -->
+                  <th:block th:each="post : ${postFinder.list(1, 500).items}">
+                    <option th:value="${post.status.permalink}" 
+                            th:data-title="${post.spec.title}"
+                            th:data-date="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"
+                            th:data-excerpt="${post.status.excerpt}"
+                            th:data-thumbnail="${post.spec.cover}">
+                      [[${post.spec.title}]]
+                    </option>
+                  </th:block>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Trip/Category Name</label>
+                <input type="text" class="form-control" id="fp-trip" placeholder="e.g. 2023 Summer Trip">
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary" id="btn-save">
+                  <i class="fas fa-save me-1"></i> Save Footprint
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          // Initialize map picker
+          var map = L.map('picker-map').setView([35, 105], 4);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+              attribution: '&copy; CARTO',
+              subdomains: 'abcd',
+              maxZoom: 20
+          }).addTo(map);
+
+          var currentMarker = null;
+
+          map.on('click', function(e) {
+              if (currentMarker) {
+                  map.removeLayer(currentMarker);
+              }
+              currentMarker = L.marker(e.latlng).addTo(map);
+              document.getElementById('selected-coords').value = e.latlng.lng.toFixed(6) + ',' + e.latlng.lat.toFixed(6);
+          });
+
+          // Handle form submit
+          document.getElementById('footprint-form').addEventListener('submit', function(e) {
+              e.preventDefault();
+              
+              var coordsStr = document.getElementById('selected-coords').value;
+              if (!coordsStr) {
+                  alert('Please click on the map to select coordinates first.');
+                  return;
+              }
+              
+              var parts = coordsStr.split(',');
+              var lng = parseFloat(parts[0]);
+              var lat = parseFloat(parts[1]);
+              
+              var postSelect = document.getElementById('fp-post');
+              var selectedOption = postSelect.options[postSelect.selectedIndex];
+              
+              var payload = {
+                  lat: lat,
+                  lng: lng,
+                  tripName: document.getElementById('fp-trip').value || '未分类',
+                  postUrl: selectedOption.value,
+                  title: document.getElementById('fp-title').value,
+                  excerpt: selectedOption.getAttribute('data-excerpt') || '',
+                  thumbnail: selectedOption.getAttribute('data-thumbnail') || '',
+                  dateStr: selectedOption.getAttribute('data-date') || new Date().toISOString().split('T')[0]
+              };
+
+              var btn = document.getElementById('btn-save');
+              var originalText = btn.innerHTML;
+              btn.disabled = true;
+              btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving...';
+
+              fetch('/api/footprints', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+              })
+              .then(res => {
+                  if (res.ok) {
+                      alert('Footprint saved successfully!');
+                      document.getElementById('footprint-form').reset();
+                      document.getElementById('selected-coords').value = '';
+                      if (currentMarker) map.removeLayer(currentMarker);
+                  } else if (res.status === 401) {
+                      alert('Unauthorized! You must be logged in to add footprints.');
+                  } else {
+                      alert('Failed to save footprint. Status: ' + res.status);
+                  }
+              })
+              .catch(err => {
+                  console.error(err);
+                  alert('Network error occurred.');
+              })
+              .finally(() => {
+                  btn.disabled = false;
+                  btn.innerHTML = originalText;
+              });
+          });
+          
+          // Verify admin
+          fetch('/apis/api.console.halo.run/v1alpha1/users/me')
+          .then(res => {
+              // Only redirect if explicitly unauthorized
+              if (res.status === 401 || res.status === 403 || (res.redirected && res.url.includes('login'))) {
+                  console.log("Unauthorized, redirecting to login");
+                  alert("Please login to Halo console first!");
+                  window.location.href = '/console/login';
+              }
+          })
+          .catch(e => {
+              console.log("Not logged in or API not available", e);
+          });
+      });
+    </script>
+  </div>
+</html>

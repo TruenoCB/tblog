@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  halodb:
+    image: postgres:15
+    container_name: halodb
+    restart: always
+    environment:
+      POSTGRES_DB: halo
+      POSTGRES_USER: halo
+      POSTGRES_PASSWORD: halopassword
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  halo:
+    image: halohub/halo:2.14
+    container_name: halo
+    restart: always
+    depends_on:
+      - halodb
+    volumes:
+      - ./halo_data:/root/.halo2
+    ports:
+      - "8090:8090"
+    environment:
+      - HALO_EXTERNAL_URL=http://localhost:8090
+      - SPRING_R2DBC_URL=r2dbc:pool:postgresql://halodb:5432/halo
+      - SPRING_R2DBC_USERNAME=halo
+      - SPRING_R2DBC_PASSWORD=halopassword
+      - SPRING_SQL_INIT_PLATFORM=postgresql
+    command:
+      - --spring.r2dbc.url=r2dbc:pool:postgresql://halodb:5432/halo
+      - --spring.r2dbc.username=halo
+      - --spring.r2dbc.password=halopassword
+      - --spring.sql.init.platform=postgresql
+      - --halo.external-url=http://localhost:8090

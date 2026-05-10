@@ -1,0 +1,169 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "AirboZH",
+      "name": "AirboZH",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50261327?v=4",
+      "profile": "http://airbozh.cn",
+      "contributions": [
+        "code",
+        "maintenance",
+        "doc",
+        "review"
+      ]
+    },
+    {
+      "login": "GodlessLiu",
+      "name": "Hilary Liu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/110895612?v=4",
+      "profile": "https://github.com/GodlessLiu",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "waite0603",
+      "name": "Waite Wang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/75354124?v=4",
+      "profile": "http://waite.wang",
+      "contributions": [
+        "code",
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "Dacong-wu",
+      "name": "大葱",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62319007?v=4",
+      "profile": "http://ll1025.cn",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "vveg26",
+      "name": "mareep",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62206240?v=4",
+      "profile": "http://mareep.net",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "ccxxvv77",
+      "name": "Ailelix",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46298182?v=4",
+      "profile": "https://blog.ailelix.tech",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "NovaShen555",
+      "name": "Yuhang Shen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/122534619?v=4",
+      "profile": "https://www.novashen.top/",
+      "contributions": [
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "CheneyWong",
+      "name": "Cheney Wong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3754333?v=4",
+      "profile": "http://gpio.me",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "Jamtoal",
+      "name": "Jamtoal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91370415?v=4",
+      "profile": "https://www.yazizzy.top/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "wan92hen",
+      "name": "BugKing",
+      "avatar_url": "https://avatars.githubusercontent.com/u/27671436?v=4",
+      "profile": "https://github.com/wan92hen",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "halo-dev",
+      "name": "Halo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48195280?v=4",
+      "profile": "https://halo.run",
+      "contributions": [
+        "financial",
+        "plugin",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "SinclairLin",
+      "name": "linzx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/109134798?v=4",
+      "profile": "https://github.com/SinclairLin",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "IObsession",
+      "name": "IObsession",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83881232?v=4",
+      "profile": "https://github.com/IObsession",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Camellia-2",
+      "name": "Camellia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/149544854?v=4",
+      "profile": "https://github.com/Camellia-2",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "Airsado",
+      "name": "Airsado",
+      "avatar_url": "https://avatars.githubusercontent.com/u/69459353?v=4",
+      "profile": "https://www.airsado.cn",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dotcubecn",
+      "name": "DotCube",
+      "avatar_url": "https://avatars.githubusercontent.com/u/99184151?v=4",
+      "profile": "https://dotcube.cc",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "halo-theme-chirpy",
+  "projectOwner": "AirboZH"
+}

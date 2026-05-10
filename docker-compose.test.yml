@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  halo-aio:
+    image: halo-aio-image:v14
+    container_name: my-halo-aio-test
+    ports:
+      - "8091:8090"
+    volumes:
+      - ./test-data/mysql:/var/lib/mysql
+      - ./test-data/halo:/root/.halo2
+      - ./test-data/minio:/data
+    tty: true
+    stdin_open: true

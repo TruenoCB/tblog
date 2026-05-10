@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html
+  th:replace="~{modules/layout :: html (title = 'Global Footprints', content = ~{::content},
+   layout = 'footprints', breadcrumb = ~{::breadcrumb})}"
+  xmlns:th="https://www.thymeleaf.org"
+>
+  <th:block th:fragment="breadcrumb">
+    <span>
+      <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>Footprints</span>
+  </th:block>
+
+  <div class="pl-xl-3" id="footprints-container" th:fragment="content">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h1 data-toc-skip>Global Footprints</h1>
+        <p class="text-muted mb-0">Tracking my journeys, photography, and memories around the world.</p>
+      </div>
+    </div>
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- Map Component -->
+    <link rel="stylesheet" th:href="@{/assets/css/footprintmap.css}" />
+    <style>
+        .custom-leaflet-popup .leaflet-popup-content-wrapper {
+            padding: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .custom-leaflet-popup .leaflet-popup-content {
+            margin: 0;
+            width: 100% !important;
+        }
+        .custom-leaflet-popup .leaflet-popup-tip-container {
+            display: none;
+        }
+    </style>
+    <div class="footprint-map" 
+         data-json="/apis/api.content.halo.run/v1alpha1/footprints/map-data" 
+         style="width: 100%; height: 600px; border-radius: 12px; margin-bottom: 2rem; border: 1px solid #eaeaea;">
+    </div>
+
+    <!-- Archive List for 'footprint' tag -->
+    <div class="mt-5">
+      <h3 class="mb-4"><i class="fas fa-archive me-2"></i>Footprint Archive</h3>
+      <div id="archives">
+        <th:block th:each="archive : ${postFinder.archives(1, 100).items}">
+          <!-- Filter out months that have no footprint posts -->
+          <th:block th:with="hasFootprintPosts=${false}">
+            <th:block th:each="month : ${archive.months}">
+              <th:block th:each="post : ${month.posts}">
+                <th:block th:each="tag : ${post.tags}">
+                  <th:block th:if="${tag.spec.displayName == 'footprint'}">
+                    <!-- Found at least one -->
+                  </th:block>
+                </th:block>
+              </th:block>
+            </th:block>
+            
+            <!-- In Thymeleaf, filtering nested lists natively is tricky. 
+                 We will render the standard archive structure and use CSS/JS to hide empty ones if needed, 
+                 or just render posts that have the tag. -->
+            <div class="year lead">[[${archive.year}]]</div>
+            <ul class="list-unstyled">
+              <th:block th:each="month : ${archive.months}">
+                <li th:each="post : ${month.posts}" th:with="isFootprint=${false}">
+                  <!-- Check if post has footprint tag -->
+                  <th:block th:each="tag : ${post.tags}">
+                    <th:block th:if="${tag.spec.slug == 'footprint' or tag.spec.displayName == 'footprint'}">
+                      <span class="date day">[[${#dates.format(post.spec.publishTime,'dd')}]]</span>
+                      <span class="date month small text-muted ms-1">[[${#dates.format(post.spec.publishTime,'MM月')}]]</span>
+                      <a th:href="@{${post.status.permalink}}">[[${post.spec.title}]]</a>
+                    </th:block>
+                  </th:block>
+                </li>
+              </th:block>
+            </ul>
+          </th:block>
+        </th:block>
+      </div>
+    </div>
+
+    <script th:src="@{/assets/js/utils.js?v=11}"></script>
+    <script th:src="@{/assets/js/footprintmap.js?v=11}"></script>
+    
+    <style>
+      /* Clean up empty years if any */
+      #archives ul:empty { display: none; }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Clean up empty years
+        document.querySelectorAll('#archives .year').forEach(yearEl => {
+          let ul = yearEl.nextElementSibling;
+          if (ul && ul.tagName === 'UL' && ul.children.length === 0) {
+            yearEl.style.display = 'none';
+            ul.style.display = 'none';
+          }
+        });
+      });
+    </script>
+  </div>
+</html>

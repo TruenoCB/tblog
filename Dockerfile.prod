@@ -1,0 +1,33 @@
+FROM eclipse-temurin:21-jdk-jammy AS builder
+WORKDIR /workspace
+
+# 1. 拷贝后端源码并编译
+COPY backend/ /workspace/backend/
+WORKDIR /workspace/backend
+# 清理可能残留的缓存并执行编译
+RUN find . -name "*.lock" -delete && \
+    ./gradlew :application:build -x test -x checkstyleMain --no-daemon
+
+# 2. 运行环境阶段 (轻量级 JRE)
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+
+# 设置时区为上海
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# 拷贝编译好的主程序 Jar 包
+COPY --from=builder /workspace/backend/application/build/libs/application-*.jar /app/halo.jar
+
+# 创建 Halo 的工作目录
+RUN mkdir -p /root/.halo2/themes /root/.halo2/plugins
+
+# 拷贝你的自定义主题和预置插件到镜像的默认工作目录中
+# (Docker 在第一次创建命名卷时，会自动将这些预置文件复制到卷中)
+COPY theme/halo-theme-chirpy /root/.halo2/themes/halo-theme-chirpy
+COPY plugins/*.jar /root/.halo2/plugins/
+
+EXPOSE 8090
+
+# 启动 Halo
+ENTRYPOINT ["java", "-Xmx1024m", "-Xms512m", "-jar", "/app/halo.jar"]

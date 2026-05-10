@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{modules/layout :: html(title = ${singlePage.spec.title}, content = ~{::content}, layout = 'page', breadcrumb = ~{::breadcrumb})}">
+<th:block th:fragment="breadcrumb">
+    <span>
+        <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>[[${singlePage.spec.title}]]</span>
+</th:block>
+
+<th:block th:fragment="content">
+    <h1 data-toc-skip th:text="${singlePage.spec.title}"></h1>
+    <div class="post-content">
+        <halo:photos>
+            <div th:if="${#lists.isEmpty(photoGroups)}">
+                <p class="text-center text-muted mt-5">暂无照片图库</p>
+            </div>
+            <div class="photo-groups" style="margin-top: 2rem;">
+                <div th:each="group : ${photoGroups}" style="margin-bottom: 3rem;">
+                    <h2 class="photo-group-title" th:text="${group.spec.name}" style="margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--main-border-color);"></h2>
+                    <div th:if="${group.spec.description}" class="photo-group-desc text-muted mb-4" th:text="${group.spec.description}"></div>
+                    
+                    <div class="photo-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                        <div th:each="photo : ${group.photos}" class="photo-item" style="position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); aspect-ratio: 1/1;">
+                            <a th:href="${photo.spec.url}" target="_blank" style="display: block; width: 100%; height: 100%;">
+                                <img th:src="${photo.spec.url}" th:alt="${photo.spec.displayName}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                                <div class="photo-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; padding: 8px; font-size: 0.85em; opacity: 0; transition: opacity 0.3s ease; text-align: center;" th:text="${photo.spec.displayName}"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .photo-item:hover img { transform: scale(1.05); }
+                .photo-item:hover .photo-overlay { opacity: 1; }
+            </style>
+        </halo:photos>
+    </div>
+</th:block>
+</html>

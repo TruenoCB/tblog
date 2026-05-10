@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html
+  th:replace="~{modules/layout :: html (title = ${singlePage.spec.title},
+  content = ~{::content}, layout = 'page' ,breadcrumb = ~{::breadcrumb})}"
+  xmlns:th="https://www.thymeleaf.org"
+>
+  <th:block th:fragment="breadcrumb">
+    <span>
+      <a href="/">[[#{breadcrumb.home}]]</a>
+    </span>
+    <span>[[${singlePage.spec.title}]]</span>
+  </th:block>
+
+  <th:block th:fragment="content">
+    <h1 data-toc-skip>[[${singlePage.spec.title}]]</h1>
+    <div class="post-content">
+      <th:block th:utext="${singlePage.content.content}" />
+    </div>
+    <div id="comment">
+      <halo:comment
+        group="content.halo.run"
+        kind="SinglePage"
+        th:attr="name=${singlePage.metadata.name}"
+      />
+    </div>
+  </th:block>
+</html>
