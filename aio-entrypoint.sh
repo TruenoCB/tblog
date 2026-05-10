@@ -32,20 +32,26 @@ while true; do
         break
     elif mysql -u root -phalo_db_password -e "SELECT 1" &> /dev/null; then
         break
+    # 兼容有些 ubuntu mysql 默认走 auth_socket 的情况
+    elif sudo mysql -u root -e "SELECT 1" &> /dev/null; then
+        break
     fi
     sleep 1
 done
 
 echo "=> [3/3] 初始化 Halo 数据库与账号..."
-# 判断是首次无密码登录，还是重启后的有密码登录
-if mysql -u root -e "SELECT 1" &> /dev/null; then
-    echo "首次初始化：设置数据库和密码..."
-    mysql -u root -e "CREATE DATABASE IF NOT EXISTS halo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'halo_db_password';"
-    mysql -u root -e "FLUSH PRIVILEGES;"
-else
+# 优先尝试带密码登录
+if mysql -u root -phalo_db_password -e "SELECT 1" &> /dev/null; then
     echo "检测到已存在密码，验证并确保数据库存在..."
     mysql -u root -phalo_db_password -e "CREATE DATABASE IF NOT EXISTS halo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+else
+    echo "首次初始化：设置数据库和密码..."
+    # 在某些原生系统上，直接 mysql -u root 可能会被拒绝，必须加 sudo
+    sudo mysql -u root -e "CREATE DATABASE IF NOT EXISTS halo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || mysql -u root -e "CREATE DATABASE IF NOT EXISTS halo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    
+    # 强制重置密码
+    sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'halo_db_password'; FLUSH PRIVILEGES;" || \
+    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'halo_db_password'; FLUSH PRIVILEGES;"
 fi
 
 echo "=========================================================="
