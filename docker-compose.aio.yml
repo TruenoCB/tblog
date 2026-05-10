@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   halo-aio:
-    image: halo-aio-image:v15
+    image: halo-aio-base
     container_name: my-halo-aio
     restart: unless-stopped
     ports:
