@@ -12,6 +12,15 @@ echo "=========================================================="
 # 清理可能残留的锁文件
 find . -name "*.lock" -delete
 
+# 彻底清理之前的 build 产物，确保完全重新编译
+echo "=> 清理所有历史构建产物..."
+rm -rf application/build
+rm -rf api/build
+rm -rf platform/application/build
+rm -rf platform/plugin/build
+rm -rf ui/build
+rm -rf .gradle
+
 # 【关键修复】清理跨架构(Mac到Ubuntu)可能残留的 pnpm-lock.yaml 和 node_modules，强迫它在当前架构重新解析
 echo "=> 清理前端跨架构缓存..."
 rm -f ui/pnpm-lock.yaml
