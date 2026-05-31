@@ -12,6 +12,12 @@ echo "=========================================================="
 # 清理可能残留的锁文件
 find . -name "*.lock" -delete
 
+# 【关键修复】清理跨架构(Mac到Ubuntu)可能残留的 pnpm-lock.yaml 和 node_modules，强迫它在当前架构重新解析
+echo "=> 清理前端跨架构缓存..."
+rm -f ui/pnpm-lock.yaml
+rm -rf ui/node_modules
+rm -rf ui/packages/*/node_modules
+
 # 1. 先单独编译前端，确保 UI 资源被正确生成
 echo "=> [1/2] 正在编译前端控制台资源..."
 ./gradlew clean :ui:doBuild -DfailOnNoGitDirectory=false --no-daemon --max-workers=2
